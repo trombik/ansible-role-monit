@@ -1,1 +1,9 @@
 set daemon 10
+
+{% if monit_conf_httpd_enable %}
+set httpd port {{ monit_conf_httpd_port }}
+    use address {{ monit_conf_httpd_address }}
+{% for allow in monit_conf_httpd_allow %}
+    allow {{ allow }}
+{% endfor %}
+{% endif %}
