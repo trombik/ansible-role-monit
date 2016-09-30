@@ -7,3 +7,5 @@ set httpd port {{ monit_conf_httpd_port }}
     allow {{ allow }}
 {% endfor %}
 {% endif %}
+
+set logfile syslog facility {{ monit_conf_logfile_syslog_facility }}
