@@ -8,6 +8,9 @@ monit_conf_file: "{{ __monit_conf_dir }}/monitrc"
 monit_conf_include_dir: "{{ __monit_conf_include_dir }}"
 monit_flags: ""
 
+monit_scripts: []
+monit_script_path: "{{ __monit_script_path }}"
+
 monit_conf_daemon: 10
 monit_conf_start_delay: 180
 
