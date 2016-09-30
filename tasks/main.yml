@@ -5,28 +5,29 @@
 
 - include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create log directory
+- name: Create monit.d directory
   file:
-    path: "{{ monit_log_dir }}"
+    path: "{{ monit_conf_include_dir }}"
     mode: 0755
     owner: "{{ monit_user }}"
     group: "{{ monit_group }}"
     state: directory
   notify: Restart monit
 
-- name: Create db directory
-  file:
-    path: "{{ monit_db_dir }}"
-    mode: 0755
-    owner: "{{ monit_user }}"
-    group: "{{ monit_group }}"
-    state: directory
-  notify: Restart monit
+- name: Create monirc fragments
+  template:
+    src: monitrc.fragment.j2
+    dest: "{{ monit_conf_include_dir }}/{{ item.key }}.monitrc"
+    mode: 0600
+  with_dict: "{{ monit_rc }}"
+
 
 - name: Create monit.conf
   template:
-    src: monit.conf.j2
-    dest: "{{ monit_conf }}"
+    src: monitrc.j2
+    dest: "{{ monit_conf_file }}"
+    mode: 0600
+    validate: "monit -t -c %s"
   notify: Restart monit
 
 - name: Start monit

@@ -3,17 +3,13 @@ require 'serverspec'
 
 package = 'monit'
 service = 'monit'
-config  = '/etc/monit/monit.conf'
-user    = 'monit'
-group   = 'monit'
-ports   = [ PORTS ]
-log_dir = '/var/log/monit'
-db_dir  = '/var/lib/monit'
+config  = '/etc/monitrc'
+config_dir  = '/etc/monit.d'
+# ports   = [ PORTS ]
 
 case os[:family]
 when 'freebsd'
-  config = '/usr/local/etc/monit.conf'
-  db_dir = '/var/db/monit'
+  config = '/usr/local/etc/monitrc'
 end
 
 describe package(package) do
@@ -22,21 +18,7 @@ end
 
 describe file(config) do
   it { should be_file }
-  its(:content) { should match Regexp.escape('monit') }
-end
-
-describe file(log_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-end
-
-describe file(db_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  its(:content) { should match /^set daemon \d+/ }
 end
 
 case os[:family]
@@ -51,8 +33,14 @@ describe service(service) do
   it { should be_enabled }
 end
 
-ports.each do |p|
-  describe port(p) do
-    it { should be_listening }
-  end
+describe file("#{ config_dir }/sshd.monitrc") do
+  it { should be_file }
+  it { should be_mode 600 }
+  its(:content) { should match /#{ Regexp.escape('start program  "/etc/rc.d/sshd start"') }/ }
 end
+
+#ports.each do |p|
+#  describe port(p) do
+#    it { should be_listening }
+#  end
+#end

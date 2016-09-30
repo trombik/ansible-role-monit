@@ -2,4 +2,9 @@
   roles:
     - ansible-role-monit
   vars:
-    monit_config: ""
+    monit_rc:
+      sshd: |
+        start program  "/etc/rc.d/sshd start"
+        stop program  "/etc/rc.d/sshd stop"
+        every 2 cycles
+        if failed port 22 protocol ssh then restart
