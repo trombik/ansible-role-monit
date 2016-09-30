@@ -6,10 +6,14 @@ service = 'monit'
 config  = '/etc/monitrc'
 config_dir  = '/etc/monit.d'
 ports   = [ 2812 ]
+script_path = '/usr/sbin'
+scripts = %w[ isakmpd_start ]
 
 case os[:family]
 when 'freebsd'
   config = '/usr/local/etc/monitrc'
+when 'openbsd'
+  script_path = '/usr/local/sbin'
 end
 
 describe package(package) do
@@ -45,5 +49,12 @@ end
 ports.each do |p|
   describe port(p) do
     it { should be_listening }
+  end
+end
+
+scripts.each do |file|
+  describe file("#{ script_path }/#{ file }") do
+    it { should be_file }
+    it { should be_mode 755 }
   end
 end
