@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Tomoyuki Sakurai
+  description: Condigure something
+  company: Reallyenglish
+  license: BSD
+  min_ansible_version: 2.0
+  platforms:
+  - name: FreeBSD
+    versions:
+#   - all
+    - 10.3
+#  galaxy_tags:
+#    - acme
+#    - installer
+#    - web
+dependencies:
+#  - { role: username.common, some_parameter: 3 }

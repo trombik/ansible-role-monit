@@ -1,0 +1,36 @@
+---
+# tasks file for ansible-role-monit
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ monit_log_dir }}"
+    mode: 0755
+    owner: "{{ monit_user }}"
+    group: "{{ monit_group }}"
+    state: directory
+  notify: Restart monit
+
+- name: Create db directory
+  file:
+    path: "{{ monit_db_dir }}"
+    mode: 0755
+    owner: "{{ monit_user }}"
+    group: "{{ monit_group }}"
+    state: directory
+  notify: Restart monit
+
+- name: Create monit.conf
+  template:
+    src: monit.conf.j2
+    dest: "{{ monit_conf }}"
+  notify: Restart monit
+
+- name: Start monit
+  service:
+    name: "{{ monit_service }}"
+    enabled: true
+    state: started
