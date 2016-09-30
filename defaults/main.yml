@@ -8,4 +8,12 @@ monit_conf_file: "{{ __monit_conf_dir }}/monitrc"
 monit_conf_include_dir: "{{ __monit_conf_include_dir }}"
 monit_flags: ""
 
+monit_conf_httpd_enable: True
+monit_conf_httpd_address: 127.0.0.1
+monit_conf_httpd_port: 2812
+monit_conf_httpd_allow:
+  - 127.0.0.1
+
+monit_conf_logfile_syslog_facility: log_daemon
+
 monit_rc: {}
