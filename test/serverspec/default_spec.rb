@@ -21,6 +21,7 @@ describe file(config) do
   its(:content) { should match /^set daemon \d+/ }
   its(:content) { should match /^set httpd port 2812\n\s+use address #{ Regexp.escape('127.0.0.1') }\n\s+allow\s+#{ Regexp.escape('127.0.0.1') }/ }
   its(:content) { should match /^set logfile syslog facility log_daemon/ }
+  its(:content) { should match /^include #{ Regexp.escape('/etc/monit.d/*') }/ }
 end
 
 case os[:family]
