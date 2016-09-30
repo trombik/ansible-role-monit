@@ -12,6 +12,8 @@ scripts = %w[ isakmpd_start ]
 case os[:family]
 when 'freebsd'
   config = '/usr/local/etc/monitrc'
+  config_dir = '/usr/local/etc/monit.d'
+  script_path = '/usr/local/sbin'
 when 'openbsd'
   script_path = '/usr/local/sbin'
 end
@@ -25,15 +27,15 @@ describe file(config) do
   its(:content) { should match /^set daemon \d+\n\s+with start delay \d+/ }
   its(:content) { should match /^set httpd port 2812\n\s+use address #{ Regexp.escape('127.0.0.1') }\n\s+allow\s+#{ Regexp.escape('127.0.0.1') }/ }
   its(:content) { should match /^set logfile syslog facility log_daemon/ }
-  its(:content) { should match /^include #{ Regexp.escape('/etc/monit.d/*') }/ }
+  its(:content) { should match /^include #{ Regexp.escape(config_dir + '/*') }/ }
 end
 
-case os[:family]
-when 'freebsd'
-  describe file('/etc/rc.conf.d/monit') do
-    it { should be_file }
-  end
-end
+#case os[:family]
+#when 'freebsd'
+#  describe file('/etc/rc.conf.d/monit') do
+#    it { should be_file }
+#  end
+#end
 
 describe service(service) do
   it { should be_running }
