@@ -2,6 +2,7 @@
   roles:
     - ansible-role-monit
   vars:
+    monit_conf_start_delay: 0 # disable delay during kittchen test because monit does not listen immediately
     monit_rc:
       sshd: |
         check process sshd with pidfile /var/run/sshd.pid
