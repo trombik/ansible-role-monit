@@ -8,14 +8,20 @@ config_dir  = '/etc/monit.d'
 ports   = [ 2812 ]
 script_path = '/usr/sbin'
 scripts = %w[ isakmpd_start ]
+ssh_rc_command = '/etc/init.d/ssh'
 
 case os[:family]
 when 'freebsd'
   config = '/usr/local/etc/monitrc'
   config_dir = '/usr/local/etc/monit.d'
   script_path = '/usr/local/sbin'
+  ssh_rc_command = '/etc/rc.d/sshd'
 when 'openbsd'
   script_path = '/usr/local/sbin'
+  ssh_rc_command = '/etc/rc.d/sshd'
+when 'ubuntu'
+  config = '/etc/monit/monitrc'
+  config_dir = '/etc/monit/monitrc.d'
 end
 
 describe package(package) do
@@ -45,7 +51,7 @@ end
 describe file("#{ config_dir }/sshd.monitrc") do
   it { should be_file }
   it { should be_mode 600 }
-  its(:content) { should match /#{ Regexp.escape('start program  "/etc/rc.d/sshd start"') }/ }
+  its(:content) { should match /#{ Regexp.escape('start program "' + ssh_rc_command + ' start"') }/ }
 end
 
 ports.each do |p|

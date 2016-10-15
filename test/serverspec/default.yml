@@ -2,13 +2,14 @@
   roles:
     - ansible-role-monit
   vars:
+    ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
     monit_conf_start_delay: 0 # disable delay during kittchen test because monit does not listen immediately
     monit_scripts:
       - isakmpd_start
     monit_rc:
       sshd: |
         check process sshd with pidfile /var/run/sshd.pid
-          start program  "/etc/rc.d/sshd start"
-          stop program  "/etc/rc.d/sshd stop"
+          start program "{{ ssh_rc_command }} start"
+          stop program  "{{ ssh_rc_command }} stop"
           every 2 cycles
           if failed port 22 protocol ssh then restart
