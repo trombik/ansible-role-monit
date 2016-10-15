@@ -11,4 +11,4 @@ set httpd port {{ monit_conf_httpd_port }}
 
 set logfile syslog facility {{ monit_conf_logfile_syslog_facility }}
 
-include {{ monit_conf_include_dir }}/*
+include {{ monit_conf_include_dir }}/*.monitrc

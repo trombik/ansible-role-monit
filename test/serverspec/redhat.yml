@@ -1,8 +1,9 @@
 - hosts: localhost
   roles:
+    - reallyenglish.redhat-repo
     - ansible-role-monit
   vars:
-    ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
+    ssh_rc_command: /etc/init.d/ssh
     monit_conf_start_delay: 0 # disable delay during kittchen test because monit does not listen immediately
     monit_scripts:
       - isakmpd_start
@@ -13,3 +14,10 @@
           stop program  "{{ ssh_rc_command }} stop"
           every 2 cycles
           if failed port 22 protocol ssh then restart
+    redhat_repo_extra_packages:
+      - epel-release
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes
