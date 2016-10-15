@@ -21,4 +21,4 @@ galaxy_info:
   galaxy_tags:
     - monit
 dependencies:
-  - reallyenglish.redhat-repo
+  - { role: reallyenglish.redhat-repo }
