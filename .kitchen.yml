@@ -55,17 +55,17 @@ suites:
   - name: default
     provisioner:
       name: ansible_playbook
-      playbook: test/serverspec/default.yml
+      playbook: tests/serverspec/default.yml
     verifier:
       name: shell
-      command: rspec -c -f d -I test/serverspec test/serverspec/default_spec.rb
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
     excludes: centos-7.2-x86_64
 
   - name: redhat
     provisioner:
       name: ansible_playbook
-      playbook: test/serverspec/redhat.yml
+      playbook: tests/serverspec/redhat.yml
     verifier:
       name: shell
-      command: rspec -c -f d -I test/serverspec test/serverspec/default_spec.rb
+      command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
     includes: centos-7.2-x86_64

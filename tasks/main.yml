@@ -31,7 +31,7 @@
   register: register_monitrc
   notify: Restart monit
 
-- shell: "find /etc/ -iname '{{ monit_conf_file }}.*@*~' -type f | sort | head -n 3 | xargs -r -n 1 rm"
+- shell: "find {{ monit_conf_dir }} -iname '{{ monit_conf_file }}.*@*~' -type f | sort | head -n 3 | xargs -r -n 1 rm"
   changed_when: false
   when: "{{ register_monitrc.changed }}"
 
