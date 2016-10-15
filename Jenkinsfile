@@ -9,6 +9,7 @@ node ('virtualbox') {
   sh "mkdir $directory"
   dir("$directory") {
     checkout scm
+    sh "git submodule update"
   }
   dir("$directory") {
     stage 'bundle'
