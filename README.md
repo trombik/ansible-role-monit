@@ -108,7 +108,7 @@ None for others.
 ```yaml
 - hosts: localhost
   roles:
-    - ansible-role-redhat-repo
+    - reallyenglish.redhat-repo
     - ansible-role-monit
   vars:
     ssh_rc_command: /etc/init.d/ssh
