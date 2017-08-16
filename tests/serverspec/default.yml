@@ -13,3 +13,8 @@
           stop program  "{{ ssh_rc_command }} stop"
           every 2 cycles
           if failed port 22 protocol ssh then restart
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes

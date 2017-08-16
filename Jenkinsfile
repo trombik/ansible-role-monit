@@ -8,8 +8,14 @@ node ('virtualbox') {
   stage 'Checkout'
   sh "mkdir $directory"
   dir("$directory") {
-    checkout scm
-    sh "git submodule update --init --recursive"
+    try {
+        checkout scm
+        sh "git submodule update --init"
+    } catch (e) {
+        currentBuild.result = 'FAILURE'
+        notifyBuild(currentBuild.result)
+        throw e
+    }
   }
   dir("$directory") {
     stage 'bundle'

@@ -13,7 +13,9 @@ provisioner:
   ansible_verbosity: 1
   ansible_verbose: true
   ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
+  requirements_path: requirements.yml
   http_proxy: <%= ENV['ANSIBLE_PROXY'] %>
+  idempotency_test: true
   additional_copy_path:
     - extra_modules
     - filter_plugins
@@ -47,9 +49,10 @@ platforms:
       box: trombik/ansible-ubuntu-14.04-amd64
       box_check_update: false
 
-  - name: centos-7.2-x86_64
+  - name: centos-7.3-x86_64
     driver:
-      box: trombik/ansible-centos-7.2-x86_64
+      box: trombik/ansible-centos-7.3-x86_64
+      box_check_update: false
 
 suites:
   - name: default
@@ -59,7 +62,7 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
-    excludes: centos-7.2-x86_64
+    excludes: centos-7.3-x86_64
 
   - name: redhat
     provisioner:
@@ -68,4 +71,4 @@ suites:
     verifier:
       name: shell
       command: rspec -c -f d -I tests/serverspec tests/serverspec/default_spec.rb
-    includes: centos-7.2-x86_64
+    includes: centos-7.3-x86_64

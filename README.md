@@ -1,89 +1,78 @@
-ansible-role-monit
-=====================
+# ansible-role-monit
 
 Configures monit.
 
-Requirements
-------------
+# Requirements
 
 None
 
-Role Variables
---------------
+# Role Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| monit\_user | user of monit | {{ \_\_monit\_user }} |
-| monit\_group | group of monit | {{ \_\_monit\_group }} |
-| monit\_service | service name of monit | monit |
-| monit\_conf\_dir | directory name where monitrc is | {{ \_\_monit\_conf\_dir }} |
-| monit\_conf\_file | path to monitrc | {{ \_\_monit\_conf\_dir }}/monitrc |
-| monit\_conf\_include\_dir | path to directory where all monit configuration fragments are | {{ \_\_monit\_conf\_include\_dir }} |
-| monit\_flags | not used at the moment | "" |
-| monit\_scripts | extra scripts in the role to be installed (optional) | [] |
-| monit\_script\_path | path to directory to install extra scripts | {{ \_\_monit\_script\_path }} |
-| monit\_conf\_daemon | poll cycle in sec | 10 |
-| monit\_conf\_start\_delay | start delay in sec | 180 |
-| monit\_conf\_httpd\_enable | enable http interface if true | true |
-| monit\_conf\_httpd\_address | bind address of http interface | 127.0.0.1 |
-| monit\_conf\_httpd\_port | bind port of http interface | 2812 |
-| monit\_conf\_httpd\_allow | acl to allow | ["127.0.0.1"] |
-| monit\_conf\_logfile\_syslog\_facility | syslog facility | log\_daemon |
-| monit\_rc | dict of monit configs (see the example playbook) | {} |
+| `monit_user` | user of `monit` | `{{ __monit_user }}` |
+| `monit_group` | group of `monit` | `{{ __monit_group }}` |
+| `monit_service` | service name of `monit` | `monit` |
+| `monit_conf_dir` | directory name where `monitrc` is | `{{ __monit_conf_dir }}` |
+| `monit_conf_file` | path to `monitrc` | `{{ monit_conf_dir }}/monitrc` |
+| `monit_conf_include_dir` | path to directory where all monit configuration fragments are | `{{ __monit_conf_include_dir }}` |
+| `monit_flags` | not used at the moment | `""` |
+| `monit_scripts` | extra scripts in the role to be installed (optional) | `[]` |
+| `monit_script_path` | path to directory to install extra scripts | `{{ __monit_script_path }}` |
+| `monit_conf_daemon` | poll cycle in sec | `10` |
+| `monit_conf_start_delay` | start delay in sec | `180` |
+| `monit_conf_httpd_enable` | enable http interface if true | `true` |
+| `monit_conf_httpd_address` | bind address of http interface | `127.0.0.1` |
+| `monit_conf_httpd_port` | bind port of http interface | `2812` |
+| `monit_conf_httpd_allow` | ACL to allow | `["127.0.0.1"]` |
+| `monit_conf_logfile_syslog_facility` | syslog facility | `log_daemon` |
+| `monit_rc` | dict of `monit` configuration files (see the example playbook) | `{}` |
 
 ## Debian
 
 | Variable | Default |
 |----------|---------|
-| \_\_monit\_user | root |
-| \_\_monit\_group | root |
-| \_\_monit\_conf\_dir | /etc/monit |
-| \_\_monit\_conf\_include\_dir | /etc/monit/monitrc.d |
-| \_\_monit\_script\_path | /usr/sbin |
+| `__monit_user` | `root` |
+| `__monit_group` | `root` |
+| `__monit_conf_dir` | `/etc/monit` |
+| `__monit_conf_include_dir` | `/etc/monit/monitrc.d` |
+| `__monit_script_path` | `/usr/sbin` |
 
 ## FreeBSD
 
 | Variable | Default |
 |----------|---------|
-| \_\_monit\_user | root |
-| \_\_monit\_group | wheel |
-| \_\_monit\_conf\_dir | /usr/local/etc |
-| \_\_monit\_conf\_include\_dir | /usr/local/etc/monit.d |
-| \_\_monit\_script\_path | /usr/local/sbin |
+| `__monit_user` | `root` |
+| `__monit_group` | `wheel` |
+| `__monit_conf_dir` | `/usr/local/etc` |
+| `__monit_conf_include_dir` | `/usr/local/etc/monit.d` |
+| `__monit_script_path` | `/usr/local/sbin` |
 
 ## OpenBSD
 
 | Variable | Default |
 |----------|---------|
-| \_\_monit\_user | root |
-| \_\_monit\_group | wheel |
-| \_\_monit\_conf\_dir | /etc |
-| \_\_monit\_conf\_include\_dir | /etc/monit.d |
-| \_\_monit\_script\_path | /usr/local/sbin |
+| `__monit_user` | `root` |
+| `__monit_group` | `wheel` |
+| `__monit_conf_dir` | `/etc` |
+| `__monit_conf_include_dir` | `/etc/monit.d` |
+| `__monit_script_path` | `/usr/local/sbin` |
 
 ## RedHat
 
 | Variable | Default |
 |----------|---------|
-| \_\_monit\_user | root |
-| \_\_monit\_group | root |
-| \_\_monit\_conf\_dir | /etc |
-| \_\_monit\_conf\_include\_dir | /etc/monit.d |
-| \_\_monit\_script\_path | /usr/sbin |
+| `__monit_user` | `root` |
+| `__monit_group` | `root` |
+| `__monit_conf_dir` | `/etc` |
+| `__monit_conf_include_dir` | `/etc/monit.d` |
+| `__monit_script_path` | `/usr/sbin` |
 
-Created by [yaml2readme.rb](https://gist.github.com/trombik/b2df709657c08d845b1d3b3916e592d3)
+# Dependencies
 
+None
 
-Dependencies
-------------
-
-When the host is a RedHat variant,
-
-- `ansible-role-redhat-repo`
-
-None for others.
-
-## Example Playbook
+# Example Playbook
 
 ```yaml
 - hosts: localhost
@@ -101,9 +90,14 @@ None for others.
           stop program  "{{ ssh_rc_command }} stop"
           every 2 cycles
           if failed port 22 protocol ssh then restart
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes
 ```
 
-### RedHat
+## RedHat
 
 ```yaml
 - hosts: localhost
@@ -130,9 +124,10 @@ None for others.
         gpgcheck: yes
         enabled: yes
 ```
-License
--------
 
+# License
+
+```
 Copyright (c) 2016 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
 
 Permission to use, copy, modify, and distribute this software for any
@@ -146,9 +141,9 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+```
 
-Author Information
-------------------
+# Author Information
 
 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
 

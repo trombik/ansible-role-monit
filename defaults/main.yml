@@ -2,7 +2,7 @@ monit_user: "{{ __monit_user }}"
 monit_group: "{{ __monit_group }}"
 monit_service: monit
 monit_conf_dir: "{{ __monit_conf_dir }}"
-monit_conf_file: "{{ __monit_conf_dir }}/monitrc"
+monit_conf_file: "{{ monit_conf_dir }}/monitrc"
 monit_conf_include_dir: "{{ __monit_conf_include_dir }}"
 monit_flags: ""
 
