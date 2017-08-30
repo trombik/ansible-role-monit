@@ -16,7 +16,7 @@ None
 | `monit_conf_dir` | directory name where `monitrc` is | `{{ __monit_conf_dir }}` |
 | `monit_conf_file` | path to `monitrc` | `{{ monit_conf_dir }}/monitrc` |
 | `monit_conf_include_dir` | path to directory where all monit configuration fragments are | `{{ __monit_conf_include_dir }}` |
-| `monit_conf_extra_include_dir` | list of extra directories to include (see below) | `[]` |
+| `monit_conf_extra_include_directories` | list of extra directories to include (see below) | `[]` |
 | `monit_flags` | not used at the moment | `""` |
 | `monit_scripts` | extra scripts in the role to be installed (optional) | `[]` |
 | `monit_script_path` | path to directory to install extra scripts | `{{ __monit_script_path }}` |
@@ -30,7 +30,7 @@ None
 | `monit_rc` | dict of `monit` configuration fragment files (see below) | `{}` |
 | `monit_config` | string of `monit_conf_file` (see below) | `""` |
 
-## `monit_conf_extra_include_dir`
+## `monit_conf_extra_include_directories`
 
 This is a list of dict. The dict is described below. Each `path` to a directory
 is created with the specified `owner`, `group`, and `mode`, and is included by
@@ -65,7 +65,7 @@ The value is another dict, which is explained below.
 This is a variable of raw content of `monit_conf_file`. The value will be
 inserted to `monit_conf_file`. The role adds `include` directives, after
 `monit_config`, that include files with `.monitrc` file extension under
-`monit_conf_include_dir` and `monit_conf_extra_include_dir`.
+`monit_conf_include_dir` and `monit_conf_extra_include_directories`.
 
 ## Debian
 
@@ -129,7 +129,7 @@ None
 
     extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
     extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
-    monit_conf_extra_include_dir:
+    monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
         mode: 750
@@ -177,7 +177,7 @@ None
       set logfile syslog facility log_daemon
     extra_user: ftp
     extra_group: ftp
-    monit_conf_extra_include_dir:
+    monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
         mode: 750
