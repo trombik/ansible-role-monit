@@ -11,8 +11,6 @@ scripts = %w(isakmpd_start)
 ssh_rc_command = "/etc/init.d/ssh"
 default_user = "root"
 default_group = "root"
-extra_user = "www"
-extra_group = "www"
 extra_include_dir = "/usr/local/project/config/monit"
 
 case os[:family]
@@ -21,7 +19,6 @@ when "freebsd"
   config_dir = "/usr/local/etc/monit.d"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
-  default_group = "wheel"
 when "openbsd"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
@@ -29,11 +26,6 @@ when "openbsd"
 when "ubuntu"
   config = "/etc/monit/monitrc"
   config_dir = "/etc/monit/monitrc.d"
-  extra_user = "www-data"
-  extra_group = "www-data"
-when "redhat"
-  extra_user = "ftp"
-  extra_group = "ftp"
 end
 
 describe package(package) do
