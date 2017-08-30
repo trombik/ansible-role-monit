@@ -13,7 +13,7 @@
       set logfile syslog facility log_daemon
     extra_user: ftp
     extra_group: ftp
-    monit_conf_extra_include_dir:
+    monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
         mode: 750
