@@ -3,6 +3,22 @@
 
 - include_vars: "{{ ansible_os_family }}.yml"
 
+- assert:
+    msg: "key `{{ item.key }}` must have a key, `state` and the key must be either `present` or `absent`"
+    that:
+      - "'state' in item.value"
+      - item.value.state == 'present' or item.value.state == 'absent'
+  with_dict: "{{ monit_rc }}"
+
+- assert:
+    msg: "key `{{ item.key }}` must have a key, `content` when `state` is `present`, and the key must be a string"
+    that:
+      - "'content' in item.value"
+      - item.value.content is string
+  when:
+    - item.value.state == 'present'
+  with_dict: "{{ monit_rc }}"
+
 - include: "install-{{ ansible_os_family }}.yml"
 
 - name: Create monit.d directory
@@ -20,7 +36,16 @@
     dest: "{{ monit_conf_include_dir }}/{{ item.key }}.monitrc"
     mode: 0600
   with_dict: "{{ monit_rc }}"
+  when:
+    - item.value.state == 'present'
 
+- name: Remove monitrc fragments
+  file:
+    path: "{{ monit_conf_include_dir }}/{{ item.key }}.monitrc"
+    state: absent
+  with_dict: "{{ monit_rc }}"
+  when:
+    - item.value.state == 'absent'
 
 - name: Create monit.conf
   template:

@@ -26,8 +26,19 @@ None
 | `monit_conf_httpd_port` | bind port of http interface | `2812` |
 | `monit_conf_httpd_allow` | ACL to allow | `["127.0.0.1"]` |
 | `monit_conf_logfile_syslog_facility` | syslog facility | `log_daemon` |
-| `monit_rc` | dict of `monit` configuration files (see the example playbook) | `{}` |
+| `monit_rc` | dict of `monit` configuration fragment files (see below) | `{}` |
 | `monit_config` | string of `monit_conf_file` (see below) | `""` |
+
+## `monit_rc`
+
+This variable is a dict of configuration fragments that `monitrc` includes. The
+key is descriptive name of the configuration, which is used as the file name.
+The value is another dict, which is explained below.
+
+| Name | Value | Mandatory? |
+|------|-------|------------|
+| `state` | state of the configuration, either `present` or `absent`. the file is created when `present`, removed when `absent` | yes |
+| `content` | the content of the config | yes |
 
 ## `monit_config`
 
