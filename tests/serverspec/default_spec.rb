@@ -75,14 +75,6 @@ describe file(config_dir) do
   it { should be_mode 755 }
 end
 
-describe file(extra_include_dir) do
-  it { should exist }
-  it { should be_directory }
-  it { should be_owned_by extra_user }
-  it { should be_grouped_into extra_group }
-  it { should be_mode 750 }
-end
-
 describe file("/no/such/dir") do
   it { should_not exist }
 end
