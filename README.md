@@ -30,7 +30,7 @@ None
 | `monit_rc` | dict of `monit` configuration fragment files (see below) | `{}` |
 | `monit_config` | string of `monit_conf_file` (see below) | `""` |
 
-## `monit_conf_include_dir`
+## `monit_conf_extra_include_dir`
 
 This is a list of dict. The dict is described below. Each `path` to a directory
 is created with the specified `owner`, `group`, and `mode`, and is included by
