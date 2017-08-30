@@ -93,7 +93,11 @@ describe file("#{config_dir}/sshd.monitrc") do
   it { should be_mode 600 }
   it { should be_owned_by default_user }
   it { should be_grouped_into default_group }
-  its(:content) { should match(/#{ Regexp.escape('start program "' + ssh_rc_command + ' start"') }/) }
+  if os[:family] == "redhat"
+    its(:content) { should match(/^\s+start program "#{Regexp.escape('/bin/systemctl')} start sshd"$/) }
+  else
+    its(:content) { should match(/#{ Regexp.escape('start program "' + ssh_rc_command + ' start"') }/) }
+  end
 end
 
 ports.each do |p|
