@@ -2,8 +2,16 @@
   roles:
     - ansible-role-monit
   vars:
+    monit_config: |
+      # disable delay during kittchen test because monit does not listen immediately
+      set daemon 10
+        with start delay 0
+      set httpd port 2812
+        use address 127.0.0.1
+        allow 127.0.0.1
+      set logfile syslog facility log_daemon
+
     ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
-    monit_conf_start_delay: 0 # disable delay during kittchen test because monit does not listen immediately
     monit_scripts:
       - isakmpd_start
     monit_rc:

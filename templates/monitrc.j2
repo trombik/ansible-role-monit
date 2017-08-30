@@ -1,14 +1,5 @@
-set daemon {{ monit_conf_daemon }}
-  with start delay {{ monit_conf_start_delay }}
+# Managed by ansible
 
-{% if monit_conf_httpd_enable %}
-set httpd port {{ monit_conf_httpd_port }}
-    use address {{ monit_conf_httpd_address }}
-{% for allow in monit_conf_httpd_allow %}
-    allow {{ allow }}
-{% endfor %}
-{% endif %}
-
-set logfile syslog facility {{ monit_conf_logfile_syslog_facility }}
+{{ monit_config }}
 
 include {{ monit_conf_include_dir }}/*.monitrc

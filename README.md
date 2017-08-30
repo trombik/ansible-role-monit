@@ -27,6 +27,13 @@ None
 | `monit_conf_httpd_allow` | ACL to allow | `["127.0.0.1"]` |
 | `monit_conf_logfile_syslog_facility` | syslog facility | `log_daemon` |
 | `monit_rc` | dict of `monit` configuration files (see the example playbook) | `{}` |
+| `monit_config` | string of `monit_conf_file` (see below) | `""` |
+
+## `monit_config`
+
+This is a variable of raw content of `monit_conf_file`. The value will be
+inserted to `monit_conf_file` with one exception; it adds a `include` directive
+that include files with `.monitrc` file extension under `monit_conf_include_dir`.
 
 ## Debian
 
