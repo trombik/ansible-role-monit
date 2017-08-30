@@ -9,6 +9,8 @@ ports = [2812]
 script_path = "/usr/sbin"
 scripts = %w(isakmpd_start)
 ssh_rc_command = "/etc/init.d/ssh"
+default_user = "root"
+default_group = "root"
 
 case os[:family]
 when "freebsd"
@@ -16,9 +18,11 @@ when "freebsd"
   config_dir = "/usr/local/etc/monit.d"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
+  default_group = "wheel"
 when "openbsd"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
+  default_group = "wheel"
 when "ubuntu"
   config = "/etc/monit/monitrc"
   config_dir = "/etc/monit/monitrc.d"
@@ -31,7 +35,7 @@ end
 describe file(config) do
   it { should exist }
   it { should be_file }
-  it { should be_mode 644 }
+  it { should be_mode 600 }
   its(:content) { should match(/^set daemon \d+\n\s+with start delay \d+/) }
   its(:content) { should match(/^set httpd port 2812\n\s+use address #{ Regexp.escape('127.0.0.1') }\n\s+allow\s+#{ Regexp.escape('127.0.0.1') }/) }
   its(:content) { should match(/^set logfile syslog facility log_daemon/) }
@@ -51,8 +55,11 @@ describe service(service) do
 end
 
 describe file("#{config_dir}/sshd.monitrc") do
+  it { should exist }
   it { should be_file }
   it { should be_mode 600 }
+  it { should be_owned_by default_user }
+  it { should be_grouped_into default_group }
   its(:content) { should match(/#{ Regexp.escape('start program "' + ssh_rc_command + ' start"') }/) }
 end
 
