@@ -38,16 +38,13 @@ is created with the specified `owner`, `group`, and `mode`, and is included by
 `state` is `disabled`.
 
 Note that the directories listed in the variable are assumed to be managed by
-others, not the role. Therefore, the directory is NOT removed when `state` is
-`disabled`.
+others, not the role. Therefore, the directory is NOT created when `state` is
+`enabled` or removed when `state` is `disabled`.
 
 | Name | Value | Mandatory? |
 |------|-------|------------|
 | `path` | path to the directory to be included | yes |
 | `state` | state of the directory, either `enabled` or `disabled` | yes |
-| `mode` | permission of the directory | yes when `state` is `enabled`, no when `disabled` |
-| `owner` | owner of the directory | yes when `state` is `enabled`, no when `disabled` |
-| `group` | group of the directory | yes when `state` is `enabled`, no when `disabled` |
 
 ## `monit_rc`
 

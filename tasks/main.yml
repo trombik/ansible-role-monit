@@ -23,14 +23,9 @@
   with_items: "{{ monit_conf_extra_include_directories }}"
 
 - assert:
-    msg: item in monit_conf_extra_include_directories must have `path`, `mode`, `owner`, and `group` as key when `state` is enabled
+    msg: item in monit_conf_extra_include_directories must have `path` as key
     that:
       - "'path' in item"
-      - "'mode' in item"
-      - "'owner' in item"
-      - "'group' in item"
-  when:
-    - item.state == 'enabled'
   with_items: "{{ monit_conf_extra_include_directories }}"
 
 - assert:
@@ -56,18 +51,6 @@
     path: "{{ monit_conf_include_dir }}"
     mode: 0755
     state: directory
-
-- name: Create monit_conf_extra_include_directories directories
-  file:
-    path: "{{ item.path }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-    state: directory
-  notify: Restart monit
-  with_items: "{{ monit_conf_extra_include_directories }}"
-  when:
-    - item.state == 'enabled'
 
 - name: Create monirc fragments
   template:
