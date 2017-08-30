@@ -16,6 +16,7 @@ None
 | `monit_conf_dir` | directory name where `monitrc` is | `{{ __monit_conf_dir }}` |
 | `monit_conf_file` | path to `monitrc` | `{{ monit_conf_dir }}/monitrc` |
 | `monit_conf_include_dir` | path to directory where all monit configuration fragments are | `{{ __monit_conf_include_dir }}` |
+| `monit_conf_extra_include_dir` | list of extra directories to include (see below) | `[]` |
 | `monit_flags` | not used at the moment | `""` |
 | `monit_scripts` | extra scripts in the role to be installed (optional) | `[]` |
 | `monit_script_path` | path to directory to install extra scripts | `{{ __monit_script_path }}` |
@@ -28,6 +29,25 @@ None
 | `monit_conf_logfile_syslog_facility` | syslog facility | `log_daemon` |
 | `monit_rc` | dict of `monit` configuration fragment files (see below) | `{}` |
 | `monit_config` | string of `monit_conf_file` (see below) | `""` |
+
+## `monit_conf_include_dir`
+
+This is a list of dict. The dict is described below. Each `path` to a directory
+is created with the specified `owner`, `group`, and `mode`, and is included by
+`monit_conf_file` when `state` is `enabled`. The directory is not included when
+`state` is `disabled`.
+
+Note that the directories listed in the variable are assumed to be managed by
+others, not the role. Therefore, the directory is NOT removed when `state` is
+`disabled`.
+
+| Name | Value | Mandatory? |
+|------|-------|------------|
+| `path` | path to the directory to be included | yes |
+| `state` | state of the directory, either `enabled` or `disabled` | yes |
+| `mode` | permission of the directory | yes when `state` is `enabled`, no when `disabled` |
+| `owner` | owner of the directory | yes when `state` is `enabled`, no when `disabled` |
+| `group` | group of the directory | yes when `state` is `enabled`, no when `disabled` |
 
 ## `monit_rc`
 

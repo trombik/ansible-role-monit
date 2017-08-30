@@ -11,6 +11,9 @@ scripts = %w(isakmpd_start)
 ssh_rc_command = "/etc/init.d/ssh"
 default_user = "root"
 default_group = "root"
+extra_user = ""
+extra_group = ""
+extra_include_dir = "/usr/local/project/config/monit"
 
 case os[:family]
 when "freebsd"
@@ -19,13 +22,22 @@ when "freebsd"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
   default_group = "wheel"
+  extra_user = "www"
+  extra_group = "www"
 when "openbsd"
   script_path = "/usr/local/sbin"
   ssh_rc_command = "/etc/rc.d/sshd"
   default_group = "wheel"
+  extra_user = "www"
+  extra_group = "www"
 when "ubuntu"
   config = "/etc/monit/monitrc"
   config_dir = "/etc/monit/monitrc.d"
+  extra_user = "www-data"
+  extra_group = "www-data"
+when "redhat"
+  extra_user = "ftp"
+  extra_group = "ftp"
 end
 
 describe package(package) do
@@ -39,7 +51,8 @@ describe file(config) do
   its(:content) { should match(/^set daemon \d+\n\s+with start delay \d+/) }
   its(:content) { should match(/^set httpd port 2812\n\s+use address #{ Regexp.escape('127.0.0.1') }\n\s+allow\s+#{ Regexp.escape('127.0.0.1') }/) }
   its(:content) { should match(/^set logfile syslog facility log_daemon/) }
-  its(:content) { should match(/^include #{ Regexp.escape(config_dir + '/*') }/) }
+  its(:content) { should match(/^include #{ Regexp.escape(config_dir + '/*.monitrc') }/) }
+  its(:content) { should match(/^include #{ Regexp.escape(extra_include_dir + '/*.monitrc') }/) }
 end
 
 # case os[:family]
@@ -52,6 +65,26 @@ end
 describe service(service) do
   it { should be_running }
   it { should be_enabled }
+end
+
+describe file(config_dir) do
+  it { should exist }
+  it { should be_directory }
+  it { should be_owned_by default_user }
+  it { should be_grouped_into default_group }
+  it { should be_mode 755 }
+end
+
+describe file(extra_include_dir) do
+  it { should exist }
+  it { should be_directory }
+  it { should be_owned_by extra_user }
+  it { should be_grouped_into extra_group }
+  it { should be_mode 750 }
+end
+
+describe file("/no/such/dir") do
+  it { should_not exist }
 end
 
 describe file("#{config_dir}/sshd.monitrc") do
