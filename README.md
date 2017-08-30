@@ -63,8 +63,9 @@ The value is another dict, which is explained below.
 ## `monit_config`
 
 This is a variable of raw content of `monit_conf_file`. The value will be
-inserted to `monit_conf_file` with one exception; it adds a `include` directive
-that include files with `.monitrc` file extension under `monit_conf_include_dir`.
+inserted to `monit_conf_file`. The role adds `include` directives, after
+`monit_config`, that include files with `.monitrc` file extension under
+`monit_conf_include_dir` and `monit_conf_extra_include_dir`.
 
 ## Debian
 
