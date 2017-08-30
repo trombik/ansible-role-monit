@@ -21,3 +21,4 @@ monit_conf_httpd_allow:
 monit_conf_logfile_syslog_facility: log_daemon
 
 monit_rc: {}
+monit_config: ""

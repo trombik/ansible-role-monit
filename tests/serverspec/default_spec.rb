@@ -29,7 +29,9 @@ describe package(package) do
 end
 
 describe file(config) do
+  it { should exist }
   it { should be_file }
+  it { should be_mode 644 }
   its(:content) { should match(/^set daemon \d+\n\s+with start delay \d+/) }
   its(:content) { should match(/^set httpd port 2812\n\s+use address #{ Regexp.escape('127.0.0.1') }\n\s+allow\s+#{ Regexp.escape('127.0.0.1') }/) }
   its(:content) { should match(/^set logfile syslog facility log_daemon/) }
@@ -62,6 +64,7 @@ end
 
 scripts.each do |file|
   describe file("#{script_path}/#{file}") do
+    it { should exist }
     it { should be_file }
     it { should be_mode 755 }
   end
