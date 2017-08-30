@@ -118,17 +118,40 @@ None
   roles:
     - ansible-role-monit
   vars:
+    monit_config: |
+      # disable delay during kittchen test because monit does not listen immediately
+      set daemon 10
+        with start delay 0
+      set httpd port 2812
+        use address 127.0.0.1
+        allow 127.0.0.1
+      set logfile syslog facility log_daemon
+
+    extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
+    extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
+    monit_conf_extra_include_dir:
+      - path: /usr/local/project/config/monit
+        state: enabled
+        mode: 750
+        owner: "{{ extra_user }}"
+        group: "{{ extra_group }}"
+      - path: /no/such/dir
+        state: disabled
     ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
-    monit_conf_start_delay: 0 # disable delay during kittchen test because monit does not listen immediately
     monit_scripts:
       - isakmpd_start
     monit_rc:
-      sshd: |
-        check process sshd with pidfile /var/run/sshd.pid
-          start program "{{ ssh_rc_command }} start"
-          stop program  "{{ ssh_rc_command }} stop"
-          every 2 cycles
-          if failed port 22 protocol ssh then restart
+      sshd:
+        state: present
+        content: |
+          check process sshd with pidfile /var/run/sshd.pid
+            start program "{{ ssh_rc_command }} start"
+            stop program  "{{ ssh_rc_command }} stop"
+            every 2 cycles
+            if failed port 22 protocol ssh then restart
+      foo:
+        state: absent
+        content: "foo bar buz"
     redhat_repo:
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
