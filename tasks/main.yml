@@ -13,8 +13,8 @@
     that:
       - "'path' in item"
       - item.path is string
-
   with_items: "{{ monit_conf_extra_include_dir }}"
+
 - assert:
     msg: "`state` of item in monit_conf_extra_include_dir must exist and must be either `enabled` or `disabled`"
     that:
