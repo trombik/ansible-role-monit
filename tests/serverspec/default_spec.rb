@@ -64,10 +64,6 @@ describe file(config_dir) do
   it { should be_mode 755 }
 end
 
-describe file("/no/such/dir") do
-  it { should_not exist }
-end
-
 describe file("#{config_dir}/sshd.monitrc") do
   it { should exist }
   it { should be_file }
