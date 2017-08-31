@@ -25,7 +25,7 @@ The following variables has gone in this release.
 * `monit_conf_httpd_port`
 * `monit_conf_httpd_allow`
 
-If they should be removed and ported using `monit_config`.
+They should be removed and ported using `monit_config`.
 
 #### `monit_rc` supports `state`
 
