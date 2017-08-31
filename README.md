@@ -123,14 +123,9 @@ None
         allow 127.0.0.1
       set logfile syslog facility log_daemon
 
-    extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
-    extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
-        mode: 750
-        owner: "{{ extra_user }}"
-        group: "{{ extra_group }}"
       - path: /no/such/dir
         state: disabled
     ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
@@ -171,8 +166,6 @@ None
         use address 127.0.0.1
         allow 127.0.0.1
       set logfile syslog facility log_daemon
-    extra_user: ftp
-    extra_group: ftp
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled

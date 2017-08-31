@@ -11,8 +11,6 @@
         allow 127.0.0.1
       set logfile syslog facility log_daemon
 
-    extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
-    extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
