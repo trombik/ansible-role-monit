@@ -16,9 +16,6 @@
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
-        mode: 750
-        owner: "{{ extra_user }}"
-        group: "{{ extra_group }}"
       - path: /no/such/dir
         state: disabled
     ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"

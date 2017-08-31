@@ -33,9 +33,8 @@ None
 ## `monit_conf_extra_include_directories`
 
 This is a list of dict. The dict is described below. Each `path` to a directory
-is created with the specified `owner`, `group`, and `mode`, and is included by
-`monit_conf_file` when `state` is `enabled`. The directory is not included when
-`state` is `disabled`.
+is included by `monit_conf_file` when `state` is `enabled`. The directory is
+not included when `state` is `disabled`.
 
 Note that the directories listed in the variable are assumed to be managed by
 others, not the role. Therefore, the directory is NOT created when `state` is
@@ -161,7 +160,6 @@ None
 ```yaml
 - hosts: localhost
   roles:
-    - reallyenglish.redhat-repo
     - ansible-role-monit
   vars:
     monit_config: |
@@ -172,16 +170,15 @@ None
         use address 127.0.0.1
         allow 127.0.0.1
       set logfile syslog facility log_daemon
-    extra_user: ftp
-    extra_group: ftp
+
+    extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
+    extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
-        mode: 750
-        owner: "{{ extra_user }}"
-        group: "{{ extra_group }}"
       - path: /no/such/dir
         state: disabled
+    ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
     monit_scripts:
       - isakmpd_start
     monit_rc:
@@ -189,12 +186,13 @@ None
         state: present
         content: |
           check process sshd with pidfile /var/run/sshd.pid
-            start program "/bin/systemctl start sshd"
-            stop program  "/bin/systemctl stop sshd"
+            start program "{{ ssh_rc_command }} start"
+            stop program  "{{ ssh_rc_command }} stop"
             every 2 cycles
             if failed port 22 protocol ssh then restart
-    redhat_repo_extra_packages:
-      - epel-release
+      foo:
+        state: absent
+        content: "foo bar buz"
     redhat_repo:
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
