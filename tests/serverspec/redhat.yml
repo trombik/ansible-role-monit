@@ -16,9 +16,6 @@
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
-        mode: 750
-        owner: "{{ extra_user }}"
-        group: "{{ extra_group }}"
       - path: /no/such/dir
         state: disabled
     monit_scripts:
