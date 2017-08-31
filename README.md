@@ -160,6 +160,7 @@ None
 ```yaml
 - hosts: localhost
   roles:
+    - reallyenglish.redhat-repo
     - ansible-role-monit
   vars:
     monit_config: |
@@ -170,15 +171,13 @@ None
         use address 127.0.0.1
         allow 127.0.0.1
       set logfile syslog facility log_daemon
-
-    extra_user: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
-    extra_group: "{% if ansible_os_family == 'FreeBSD' %}www{% elif ansible_os_family == 'OpenBSD' %}www{% elif ansible_os_family == 'Debian' %}www-data{% elif ansible_os_family == 'RedHat' %}ftp{% endif %}"
+    extra_user: ftp
+    extra_group: ftp
     monit_conf_extra_include_directories:
       - path: /usr/local/project/config/monit
         state: enabled
       - path: /no/such/dir
         state: disabled
-    ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
     monit_scripts:
       - isakmpd_start
     monit_rc:
@@ -186,13 +185,12 @@ None
         state: present
         content: |
           check process sshd with pidfile /var/run/sshd.pid
-            start program "{{ ssh_rc_command }} start"
-            stop program  "{{ ssh_rc_command }} stop"
+            start program "/bin/systemctl start sshd"
+            stop program  "/bin/systemctl stop sshd"
             every 2 cycles
             if failed port 22 protocol ssh then restart
-      foo:
-        state: absent
-        content: "foo bar buz"
+    redhat_repo_extra_packages:
+      - epel-release
     redhat_repo:
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
