@@ -5,6 +5,7 @@
 Previously, the content of `monitrc` had been hard-coded, but not any more. The
 new variable `monit_config` allows to create arbitrary configuration.
 
+```
 monit_conf_daemon: 10
 monit_conf_start_delay: 180
 
@@ -15,6 +16,7 @@ monit_conf_httpd_allow:
   - 127.0.0.1
 
 monit_conf_logfile_syslog_facility: log_daemon
+```
 
 The following variables has gone in this release.
 

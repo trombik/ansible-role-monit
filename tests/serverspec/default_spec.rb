@@ -7,8 +7,11 @@ config  = "/etc/monitrc"
 config_dir = "/etc/monit.d"
 ports = [2812]
 script_path = "/usr/sbin"
-scripts = %w(isakmpd_start)
-ssh_rc_command = "/etc/init.d/ssh"
+scripts = %w[isakmpd_start]
+ssh_rc_command = {
+  start: "",
+  stop: ""
+}
 default_user = "root"
 default_group = "root"
 extra_include_dir = "/usr/local/project/config/monit"
@@ -18,15 +21,18 @@ when "freebsd"
   config = "/usr/local/etc/monitrc"
   config_dir = "/usr/local/etc/monit.d"
   script_path = "/usr/local/sbin"
-  ssh_rc_command = "/etc/rc.d/sshd"
+  ssh_rc_command = { start: "service sshd start", stop: "service sshd stop" }
   default_group = "wheel"
 when "openbsd"
   script_path = "/usr/local/sbin"
-  ssh_rc_command = "/etc/rc.d/sshd"
+  ssh_rc_command = { start: "rcctl start sshd", stop: "rcctl stop sshd" }
   default_group = "wheel"
 when "ubuntu"
   config = "/etc/monit/monitrc"
   config_dir = "/etc/monit/monitrc.d"
+  ssh_rc_command = { start: "service ssh start", stop: "service ssh stop" }
+when "redhat"
+  ssh_rc_command = { start: "/bin/systemctl start sshd", stop: "/bin/systemctl stop sshd" }
 end
 
 describe package(package) do
@@ -73,7 +79,8 @@ describe file("#{config_dir}/sshd.monitrc") do
   if os[:family] == "redhat"
     its(:content) { should match(/^\s+start program "#{Regexp.escape('/bin/systemctl')} start sshd"$/) }
   else
-    its(:content) { should match(/#{ Regexp.escape('start program "' + ssh_rc_command + ' start"') }/) }
+    its(:content) { should match(/#{ Regexp.escape('start program "' + ssh_rc_command[:start] + '"') }/) }
+    its(:content) { should match(/#{ Regexp.escape('stop program "' + ssh_rc_command[:stop] + '"') }/) }
   end
 end
 
