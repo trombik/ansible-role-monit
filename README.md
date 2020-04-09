@@ -103,9 +103,12 @@ None
 # Example Playbook
 
 ```yaml
+---
 - hosts: localhost
   roles:
-    - ansible-role-monit
+    - role: trombik.redhat_repo
+      when: ansible_os_family == 'RedHat'
+    - role: ansible-role-monit
   vars:
     monit_config: |
       # disable delay during kittchen test because monit does not listen immediately
@@ -121,7 +124,19 @@ None
         state: enabled
       - path: /no/such/dir
         state: disabled
-    ssh_rc_command: "{% if (ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD') %}/etc/rc.d/sshd{% else %}/etc/init.d/ssh{% endif %}"
+    os_ssh_rc_command:
+      FreeBSD:
+        start: service sshd start
+        stop: service sshd stop
+      OpenBSD:
+        start: rcctl start sshd
+        stop: rcctl stop sshd
+      Debian:
+        start: service ssh start
+        stop: service ssh stop
+      RedHat:
+        start: /bin/systemctl start sshd
+        stop: /bin/systemctl stop sshd
     monit_scripts:
       - isakmpd_start
     monit_rc:
@@ -129,13 +144,15 @@ None
         state: present
         content: |
           check process sshd with pidfile /var/run/sshd.pid
-            start program "{{ ssh_rc_command }} start"
-            stop program  "{{ ssh_rc_command }} stop"
+            start program "{{ os_ssh_rc_command[ansible_os_family]['start'] }}"
+            stop program "{{ os_ssh_rc_command[ansible_os_family]['stop'] }}"
             every 2 cycles
             if failed port 22 protocol ssh then restart
       foo:
         state: absent
         content: "foo bar buz"
+    redhat_repo_extra_packages:
+      - epel-release
     redhat_repo:
       epel:
         mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
