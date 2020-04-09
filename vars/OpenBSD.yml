@@ -1,3 +1,4 @@
+---
 __monit_user: root
 __monit_group: wheel
 __monit_conf_dir: /etc
