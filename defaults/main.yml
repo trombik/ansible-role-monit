@@ -1,3 +1,4 @@
+---
 monit_user: "{{ __monit_user }}"
 monit_group: "{{ __monit_group }}"
 monit_service: monit
