@@ -1,41 +1,48 @@
 ---
 # tasks file for ansible-role-monit
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- assert:
+- name: Assert that monit_conf_extra_include_directories is list
+  assert:
     msg: monit_conf_extra_include_directories must be sequence, or list
     that:
       - monit_conf_extra_include_directories is sequence
 
-- assert:
+- name: Assert that every item in monit_conf_extra_include_directories has path and is string
+  assert:
     msg: "`path` of item in monit_conf_extra_include_directories must exist and must be string"
     that:
       - "'path' in item"
       - item.path is string
   with_items: "{{ monit_conf_extra_include_directories }}"
 
-- assert:
+- name: Assert that every item in monit_conf_extra_include_directories has `state` and is either enabled or disabled
+  assert:
     msg: "`state` of item in monit_conf_extra_include_directories must exist and must be either `enabled` or `disabled`"
     that:
       - "'state' in item"
       - item.state == 'enabled' or item.state == 'disabled'
   with_items: "{{ monit_conf_extra_include_directories }}"
 
-- assert:
+- name: Assert that every item in monit_conf_extra_include_directories has path
+  assert:
     msg: item in monit_conf_extra_include_directories must have `path` as key
     that:
       - "'path' in item"
   with_items: "{{ monit_conf_extra_include_directories }}"
 
-- assert:
+- name: Assert that every item in monit_rc has state, and is either present or absent
+  assert:
     msg: "key `{{ item.key }}` must have a key, `state` and the key must be either `present` or `absent`"
     that:
       - "'state' in item.value"
       - item.value.state == 'present' or item.value.state == 'absent'
   with_dict: "{{ monit_rc }}"
 
-- assert:
+- name: Assert that when state is `prresent`, every item in monit_rc has content, and is string
+  assert:
     msg: "key `{{ item.key }}` must have a key, `content` when `state` is `present`, and the key must be a string"
     that:
       - "'content' in item.value"
@@ -44,7 +51,8 @@
     - item.value.state == 'present'
   with_dict: "{{ monit_rc }}"
 
-- include: "install-{{ ansible_os_family }}.yml"
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include_tasks: "install-{{ ansible_os_family }}.yml"
 
 - name: Create monit_conf_include_dir
   file:
@@ -76,15 +84,16 @@
     mode: 0600
     backup: yes
   register: register_monitrc
-  notify: Restart monit
-
-- name: Remove old monit.conf files
-  shell: "find {{ monit_conf_dir }} -iname '{{ monit_conf_file }}.*@*~' -type f | sort | head -n 3 | xargs -r -n 1 rm"
-  changed_when: false
-  when: register_monitrc.changed
+  notify:
+    - Remove old monit.conf files
+    - Restart monit
 
 - name: Validate monit.conf
-  command: "monit -t -c {{ monit_conf_file }}"
+  # XXX you cannot use `validate` in `Create monit.conf` task because you must
+  # validate the file *and* all files that it includes.
+  # XXX you cannot use a handler to validate the file because the handler is
+  # executed at the end of all the tasks.
+  command: "monit -t -c {{ monit_conf_file }}"  # noqa 503
   changed_when: false
   when: register_monitrc.changed
 
