@@ -1,3 +1,4 @@
+---
 __monit_user: root
 __monit_group: root
 __monit_conf_dir: /etc/monit
