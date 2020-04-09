@@ -143,51 +143,10 @@ None
         enabled: yes
 ```
 
-## RedHat
-
-```yaml
-- hosts: localhost
-  roles:
-    - reallyenglish.redhat-repo
-    - ansible-role-monit
-  vars:
-    monit_config: |
-      # disable delay during kittchen test because monit does not listen immediately
-      set daemon 10
-        with start delay 0
-      set httpd port 2812
-        use address 127.0.0.1
-        allow 127.0.0.1
-      set logfile syslog facility log_daemon
-    monit_conf_extra_include_directories:
-      - path: /usr/local/project/config/monit
-        state: enabled
-      - path: /no/such/dir
-        state: disabled
-    monit_scripts:
-      - isakmpd_start
-    monit_rc:
-      sshd:
-        state: present
-        content: |
-          check process sshd with pidfile /var/run/sshd.pid
-            start program "/bin/systemctl start sshd"
-            stop program  "/bin/systemctl stop sshd"
-            every 2 cycles
-            if failed port 22 protocol ssh then restart
-    redhat_repo_extra_packages:
-      - epel-release
-    redhat_repo:
-      epel:
-        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
-        gpgcheck: yes
-        enabled: yes
-```
-
 # License
 
 ```
-Copyright (c) 2016 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
+Copyright (c) 2016 Tomoyuki Sakurai <y@trombik.org>
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -204,6 +163,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 # Author Information
 
-Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
+Tomoyuki Sakurai <y@trombik.org>
 
 This README was created by [ansible-role-init](https://gist.github.com/trombik/d01e280f02c78618429e334d8e4995c0)
