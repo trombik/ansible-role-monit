@@ -10,25 +10,18 @@ None
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `monit_user` | user of `monit` | `{{ __monit_user }}` |
-| `monit_group` | group of `monit` | `{{ __monit_group }}` |
+| `monit_user` | user name of `monit` | `{{ __monit_user }}` |
+| `monit_group` | group name of `monit` | `{{ __monit_group }}` |
 | `monit_service` | service name of `monit` | `monit` |
-| `monit_conf_dir` | directory name where `monitrc` is | `{{ __monit_conf_dir }}` |
+| `monit_conf_dir` | base directory of `monit_conf_file` | `{{ __monit_conf_dir }}` |
 | `monit_conf_file` | path to `monitrc` | `{{ monit_conf_dir }}/monitrc` |
-| `monit_conf_include_dir` | path to directory where all monit configuration fragments are | `{{ __monit_conf_include_dir }}` |
-| `monit_conf_extra_include_directories` | list of extra directories to include (see below) | `[]` |
-| `monit_flags` | not used at the moment | `""` |
-| `monit_scripts` | extra scripts in the role to be installed (optional) | `[]` |
-| `monit_script_path` | path to directory to install extra scripts | `{{ __monit_script_path }}` |
-| `monit_conf_daemon` | poll cycle in sec | `10` |
-| `monit_conf_start_delay` | start delay in sec | `180` |
-| `monit_conf_httpd_enable` | enable http interface if true | `true` |
-| `monit_conf_httpd_address` | bind address of http interface | `127.0.0.1` |
-| `monit_conf_httpd_port` | bind port of http interface | `2812` |
-| `monit_conf_httpd_allow` | ACL to allow | `["127.0.0.1"]` |
-| `monit_conf_logfile_syslog_facility` | syslog facility | `log_daemon` |
-| `monit_rc` | dict of `monit` configuration fragment files (see below) | `{}` |
-| `monit_config` | string of `monit_conf_file` (see below) | `""` |
+| `monit_conf_include_dir` | path to directory where config fragment files reside | `{{ __monit_conf_include_dir }}` |
+| `monit_conf_extra_include_directories` | see below | `[]` |
+| `monit_flags` | TBW | `""` |
+| `monit_scripts` | TBW | `[]` |
+| `monit_script_path` | TBW | `{{ __monit_script_path }}` |
+| `monit_rc` | see below | `{}` |
+| `monit_config` | see below | `""` |
 
 ## `monit_conf_extra_include_directories`
 
