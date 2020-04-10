@@ -18,10 +18,29 @@ None
 | `monit_conf_include_dir` | path to directory where config fragment files reside | `{{ __monit_conf_include_dir }}` |
 | `monit_conf_extra_include_directories` | see below | `[]` |
 | `monit_flags` | TBW | `""` |
-| `monit_scripts` | TBW | `[]` |
-| `monit_script_path` | TBW | `{{ __monit_script_path }}` |
+| `monit_scripts` | see below | `[]` |
+| `monit_script_dir` | base directory of `monit_scripts` (see below) | `{{ monit_conf_dir }}/monit.script` |
 | `monit_rc` | see below | `{}` |
 | `monit_config` | see below | `""` |
+
+## `monit_scripts`
+
+This is a list of dict. Often, you need a wrapper script to run an
+application. This is especially true when the application does not properly
+daemonized, such as one that logs to `stdout`, or when the application does
+not have init script. the role creates a file, when `state` is present, with
+the content of `content`. as the role does not know what the content is, it
+does not prepend the usual `Managed by ansible` comment.
+
+| Key | Description | Mandatory? |
+|-----|-------------|------------|
+| `name` | name of the script. the actual path to the script is `{{ monit_script_dir }}/{{ name }}` | yes |
+| `content` | content of the script. | no |
+| `state` | either `present` or `absent` | no |
+
+## `monit_scripts`
+
+This is a path to directory where `monit_scripts` are kept.
 
 ## `monit_conf_extra_include_directories`
 
@@ -64,7 +83,6 @@ inserted to `monit_conf_file`. The role adds `include` directives, after
 | `__monit_group` | `root` |
 | `__monit_conf_dir` | `/etc/monit` |
 | `__monit_conf_include_dir` | `/etc/monit/monitrc.d` |
-| `__monit_script_path` | `/usr/sbin` |
 
 ## FreeBSD
 
@@ -74,7 +92,6 @@ inserted to `monit_conf_file`. The role adds `include` directives, after
 | `__monit_group` | `wheel` |
 | `__monit_conf_dir` | `/usr/local/etc` |
 | `__monit_conf_include_dir` | `/usr/local/etc/monit.d` |
-| `__monit_script_path` | `/usr/local/sbin` |
 
 ## OpenBSD
 
@@ -84,7 +101,6 @@ inserted to `monit_conf_file`. The role adds `include` directives, after
 | `__monit_group` | `wheel` |
 | `__monit_conf_dir` | `/etc` |
 | `__monit_conf_include_dir` | `/etc/monit.d` |
-| `__monit_script_path` | `/usr/local/sbin` |
 
 ## RedHat
 
@@ -94,7 +110,6 @@ inserted to `monit_conf_file`. The role adds `include` directives, after
 | `__monit_group` | `root` |
 | `__monit_conf_dir` | `/etc` |
 | `__monit_conf_include_dir` | `/etc/monit.d` |
-| `__monit_script_path` | `/usr/sbin` |
 
 # Dependencies
 
@@ -138,7 +153,11 @@ None
         start: /bin/systemctl start sshd
         stop: /bin/systemctl stop sshd
     monit_scripts:
-      - isakmpd_start
+      - name: isakmpd_start
+        content: |
+          #!/bin/sh
+          set -e
+          echo "isakmpd start"
     monit_rc:
       sshd:
         state: present

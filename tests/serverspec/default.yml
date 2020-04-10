@@ -33,7 +33,11 @@
         start: /bin/systemctl start sshd
         stop: /bin/systemctl stop sshd
     monit_scripts:
-      - isakmpd_start
+      - name: isakmpd_start
+        content: |
+          #!/bin/sh
+          set -e
+          echo "isakmpd start"
     monit_rc:
       sshd:
         state: present
