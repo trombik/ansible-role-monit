@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: monit
   author: Tomoyuki Sakurai
   description: Configure monit
   company: N/A
