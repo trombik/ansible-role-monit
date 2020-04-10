@@ -6,8 +6,7 @@ service = "monit"
 config  = "/etc/monitrc"
 config_dir = "/etc/monit.d"
 ports = [2812]
-script_path = "/usr/sbin"
-scripts = %w[isakmpd_start]
+script_dir = "/etc/monit.script"
 ssh_rc_command = {
   start: "",
   stop: ""
@@ -20,17 +19,18 @@ case os[:family]
 when "freebsd"
   config = "/usr/local/etc/monitrc"
   config_dir = "/usr/local/etc/monit.d"
-  script_path = "/usr/local/sbin"
   ssh_rc_command = { start: "service sshd start", stop: "service sshd stop" }
   default_group = "wheel"
+  script_dir = "/usr/local/etc/monit.script"
 when "openbsd"
-  script_path = "/usr/local/sbin"
   ssh_rc_command = { start: "rcctl start sshd", stop: "rcctl stop sshd" }
   default_group = "wheel"
+  script_dir = "/etc/monit.script"
 when "ubuntu"
   config = "/etc/monit/monitrc"
   config_dir = "/etc/monit/monitrc.d"
   ssh_rc_command = { start: "service ssh start", stop: "service ssh stop" }
+  script_dir = "/etc/monit/monit.script"
 when "redhat"
   ssh_rc_command = { start: "/bin/systemctl start sshd", stop: "/bin/systemctl stop sshd" }
 end
@@ -90,10 +90,10 @@ ports.each do |p|
   end
 end
 
-scripts.each do |file|
-  describe file("#{script_path}/#{file}") do
-    it { should exist }
-    it { should be_file }
-    it { should be_mode 755 }
-  end
+describe file("#{script_dir}/isakmpd_start") do
+  it { should exist }
+  it { should be_file }
+  it { should be_mode 755 }
+  its(:content) { should match Regexp.escape("#!/bin/sh") }
+  its(:content) { should match(/echo "isakmpd start"/) }
 end

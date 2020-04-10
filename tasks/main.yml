@@ -97,12 +97,34 @@
   changed_when: false
   when: register_monitrc.changed
 
-- name: Create pre-defined script
-  copy:
-    dest: "{{ monit_script_path }}/{{ item }}"
-    src: "{{ item }}"
+- name: Create monit_script_dir
+  file:
+    path: "{{ monit_script_dir }}"
+    owner: "{{ monit_user }}"
+    group: "{{ monit_group }}"
+    state: directory
+
+- name: Create monit_scripts
+  template:
+    src: script.j2
+    dest: "{{ monit_script_dir }}/{{ item.name }}"
     mode: 0755
   with_items: "{{ monit_scripts }}"
+  when:
+    - "(not 'state' in item) or (item.state == 'present')"
+  notify:
+    - Restart monit
+
+- name: Delete monit_scripts
+  file:
+    path: "{{ monit_script_dir }}/{{ item.name }}"
+    state: absent
+  with_items: "{{ monit_scripts }}"
+  when:
+    - "'state' in item"
+    - item.state == 'absent'
+  notify:
+    - Restart monit
 
 - name: Start monit
   service:

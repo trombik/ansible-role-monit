@@ -9,7 +9,7 @@ monit_conf_extra_include_directories: []
 monit_flags: ""
 
 monit_scripts: []
-monit_script_path: "{{ __monit_script_path }}"
+monit_script_dir: "{{ monit_conf_dir }}/monit.script"
 
 monit_rc: {}
 monit_config: ""
