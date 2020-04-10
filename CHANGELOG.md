@@ -1,3 +1,7 @@
+# CHANGELOG
+
+## Release 2.0.0
+
 ### Backward incompatibilities
 
 #### Introducing `monit_config`
