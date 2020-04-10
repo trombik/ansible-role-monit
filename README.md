@@ -1,6 +1,6 @@
-# ansible-role-monit
+# `trombik.monit`
 
-Configures monit.
+`ansible` role for `monit`
 
 # Requirements
 
@@ -182,7 +182,7 @@ None
 # License
 
 ```
-Copyright (c) 2016 Tomoyuki Sakurai <y@trombik.org>
+Copyright (c) 2020 Tomoyuki Sakurai <y@trombik.org>
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
