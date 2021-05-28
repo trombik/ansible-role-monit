@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Release 2.0.2
+
+* 86c898a bugfix: QA
+
 ## Release 2.0.1
 
 * 975811a bugfix: fix path to python on FreeBSD
